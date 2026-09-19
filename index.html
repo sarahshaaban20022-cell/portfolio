@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SARA SHAPAN — Portfolio</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#111;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
+#app{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+#book{position:relative;filter:drop-shadow(0 18px 35px rgba(0,0,0,.45))}
+.page{position:absolute;top:0;width:50%;height:100%;background:#fff;overflow:hidden;transition:transform .75s cubic-bezier(.2,.7,.2,1);backface-visibility:hidden}
+.left{left:0;transform-origin:right center}.right{left:50%;transform-origin:left center}
+.page img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}.flipped{transform:rotateY(-180deg)}
+button{position:fixed;top:50%;transform:translateY(-50%);border:0;background:rgba(255,255,255,.12);color:#fff;font-size:34px;width:52px;height:70px;border-radius:10px;cursor:pointer;z-index:20}
+#prev{left:18px}#next{right:18px}button:hover{background:rgba(255,255,255,.25)}
+#counter{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);font-size:13px;opacity:.75;z-index:20}
+</style></head><body>
+<div id="app"><div id="book"></div></div><button id="prev">‹</button><button id="next">›</button><div id="counter"></div>
+<script>
+const N=20,book=document.getElementById('book'),counter=document.getElementById('counter');let pages=[],current=0;
+function image(n){let x=document.createElement('img');x.src='pages/page-'+String(n).padStart(2,'0')+'.jpg';x.alt='Portfolio page '+n;return x}
+function mobile(){return innerWidth<=700}
+function fit(){let w,h;if(mobile()){w=Math.min(innerWidth-50,650);h=Math.min(innerHeight-90,w/.707)}else{h=Math.min(innerHeight-70,900);w=Math.min(innerWidth-120,1400,h*2*.707)}book.style.width=w+'px';book.style.height=h+'px'}
+function build(){book.innerHTML='';pages=[];if(mobile()){let p=document.createElement('div');p.className='page left';p.style.position='relative';p.appendChild(image(1));book.appendChild(p);pages=[p]}else{for(let i=0;i<N;i++){let p=document.createElement('div');p.className='page '+(i%2?'right':'left');p.style.zIndex=N-i;p.appendChild(image(i+1));book.appendChild(p);pages.push(p)}}fit();update()}
+function update(){counter.textContent=(mobile()?current+1:Math.min(current+1,N))+' / '+N}
+function showMobile(){pages[0].innerHTML='';pages[0].appendChild(image(current+1));update()}
+function next(){if(mobile()){current=Math.min(current+1,N-1);showMobile()}else if(current<N){pages[current].classList.add('flipped');current++;update()}}
+function prev(){if(mobile()){current=Math.max(current-1,0);showMobile()}else if(current>0){current--;pages[current].classList.remove('flipped');update()}}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
+addEventListener('resize',()=>{fit();if(mobile())showMobile()});build();
+</script></body></html>
